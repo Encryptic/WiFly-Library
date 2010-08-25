@@ -1,3 +1,7 @@
+This is a modified version of the WiFly shield Library from SparkFun.
+
+These modifications were made by Chris Theberge.  Much of the code here is experimental, so assume it does not work.
+
 == SparkFun WiFly Shield Library : alpha 0 release ==
 
 This is a library for the Arduino-compatible WiFly Shield available from

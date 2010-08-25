@@ -6,7 +6,7 @@
 class WiFlyDevice {
   public:
     WiFlyDevice(SpiUartDevice& theUart);
-    void begin();
+    void begin(boolean adhocMode);
 	boolean createAdHocNetwork(const char *ssid);
     //TODO: Add additional join methods    
     boolean join(const char *ssid, const char *passphrase);
@@ -42,7 +42,8 @@ class WiFlyDevice {
     void switchToCommandMode();
     void reboot();
     void requireFlowControl();
-    void setConfiguration();
+    void setConfiguration(boolean adhocMode);
+	void setAdhocParams();
     boolean sendCommand(const char *command,
                         boolean isMultipartCommand, // Has default value
                         const char *expectedResponse); // Has default value

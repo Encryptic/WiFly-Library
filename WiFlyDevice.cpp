@@ -69,13 +69,13 @@ WiFlyDevice::WiFlyDevice(SpiUartDevice& theUart) : uart (theUart) {
 //       and/or allow the select pin to be supplied.
 
 
-void WiFlyDevice::begin() {
+void WiFlyDevice::begin(boolean adhocMode) {
   /*
    */
   uart.begin();
   reboot(); // Reboot to get device into known state
   requireFlowControl();
-  setConfiguration();
+  setConfiguration(adhocMode);
 }
 
 // TODO: Create a `begin()` that allows IP etc to be supplied.
@@ -180,7 +180,7 @@ void WiFlyDevice::requireFlowControl() {
   reboot();
 }
 
-void WiFlyDevice::setConfiguration() {
+void WiFlyDevice::setConfiguration(boolean adhocMode) {
   /*
    */
   switchToCommandMode();
@@ -201,10 +201,17 @@ void WiFlyDevice::setConfiguration() {
   // Turn off remote connect message
   sendCommand("set comm remote 0");
 
+  // CDT: Enable the DHCP mode again, if this was used
+  if(adhocMode)
+  {
 	sendCommand("set wlan auth 4");
 	
 	sendCommand("set ip dhcp 1");
-  
+  } 
+  else
+  {
+	setAdhocParams();
+  }
   // Turn off status messages
   // sendCommand("set sys printlvl 0");
   
@@ -215,10 +222,25 @@ void WiFlyDevice::setConfiguration() {
   // sendCommand("set uart mode 0");
 }
 
-boolean WiFlyDevice::createAdHocNetwork(const char *ssid)
+void WiFlyDevice::setAdhocParams()
 {
-	sendCommand("set ip d 2");
+	// Disable Auto-connect
+	sendCommand("set wlan join 0");
 	
+	// Disable Authentication for AdHoc Mode
+	sendCommand("set wlan auth 0");
+	
+	// Enable Auto IP assignment, This allows the WiFly to automatically
+	// assign the IP addresses
+	sendCommand("set ip d 2");
+}
+
+//
+// TODO: Revaluate if this method is actually required. Perhaps the Join method can
+// do all of this, and use a internal Private variable to provide all the required parameters
+// 
+boolean WiFlyDevice::createAdHocNetwork(const char *ssid)
+{	
 	sendCommand("set wlan ssid ", true);
 	sendCommand(ssid);
 	
@@ -230,7 +252,7 @@ boolean WiFlyDevice::createAdHocNetwork(const char *ssid)
 	
 	if (sendCommand(ssid, false, "Creating ADhoc network")) {
 	    // TODO: Extract information from complete response?
-	    // TODO: Change this to still work when server mode not active
+	    // TODO: Determine if there is a better, more reliable way of detecting this
 	    waitForResponse("ADhoc on ");
 	    skipRemainderOfResponse();
 		return true;
