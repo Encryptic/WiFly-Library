@@ -26,7 +26,7 @@ void setup() {
   Serial.begin(9600);
   Serial.println("\n\r\n\rWiFly Shield Terminal Routine");
   
-  // Enable Adhoc mode
+  // Enable Adhoc mod
   WiFly.begin(true);
 
   if(!WiFly.createAdHocNetwork(ssid)) {
@@ -42,6 +42,7 @@ void setup() {
 
 
 void loop() {
+  /*
   // Terminal routine
 
   // Always display a response uninterrupted by typing
@@ -54,4 +55,5 @@ void loop() {
   if(Serial.available()) { // Outgoing data
     SpiSerial.print(Serial.read(), BYTE);
   }
+  */
 }

@@ -201,8 +201,10 @@ void WiFlyDevice::setConfiguration(boolean adhocMode) {
   // Turn off remote connect message
   sendCommand("set comm remote 0");
 
-  // CDT: Enable the DHCP mode again, if this was used
-  if(adhocMode)
+  // CDT: Enable the DHCP mode again, if the shield
+  // was last used in AdHoc mode we won't do things correctly without
+  // these changes.
+  if(!adhocMode)
   {
 	sendCommand("set wlan auth 4");
 	
