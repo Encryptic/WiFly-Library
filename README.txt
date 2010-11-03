@@ -2,7 +2,7 @@ This is a modified version of the WiFly shield Library from SparkFun.
 
 These modifications were made by Chris Theberge.  Much of the code here is experimental, so assume it does not work.
 
-== SparkFun WiFly Shield Library : alpha 0 release ==
+== SparkFun WiFly Shield Library : alpha 1 release ==
 
 This is a library for the Arduino-compatible WiFly Shield available from
 SparkFun Electronics:
@@ -74,17 +74,16 @@ works in most cases.
 There are some known issues:
 
  * Only supports WPA networks with passwords. If you have a network
-   without a passphrase then it should work if you supply an empty
-   string (or a dummy passphrase) but this has not been tested. If you
-   have a WEP network you should probably change it to use WPA
-   instead. :) If that's not an option then it should be possible to
-   change the library code to set the WEP key rather than a WPA
-   passphrase.
+   without a passphrase then it should work if you supply a dummy
+   passphrase. If you have a WEP network you should probably change it
+   to use WPA instead. :) If that's not an option then it should be
+   possible to change the library code to set the WEP key rather than
+   a WPA passphrase.
 
  * Incomplete documentation.
 
  * Only tested with WiFly firmware version 2.18--earlier or later
-   versions may or may not have issues.
+   versions may or may not have issues. 2.20 has also been tested.
 
  * Only DHCP is supported--you can't specify an IP address and DNS
    configuration directly.
@@ -129,6 +128,25 @@ Please email <spark@sparkfun.com> or leave a comment on the SparkFun forums:
 
 
 = Changelog =
+
++ alpha 1 -- 31 August 2010 -- "August Gratitude"
+
+  * Change default crystal speed to match new 14MHz crystal used.
+    NOTE: People using the older 12MHz crystal will need to change
+          "USE_14_MHZ_CRYSTAL" in SpiUart.cpp to 'false'.
+
+  * Added ability to set baud rate at runtime in SpiUart class.
+    (Note: This ability to change the baudrate has not yet been propagated
+    to the WiFly class.)
+
+  * Renamed Spi.h to _Spi.h in order to avoid clashes with the other
+    library by the same name as the IDE might (and has) mistakenly
+    included ours instead of the the other one which results in
+    confusing error messages.
+
+  * Changed the case of the 'examples' directory so it gets displayed
+    in the IDE correctly.
+
 
 + alpha 0 -- 19 May 2010 -- "Awfully Gorgeous"
   *  Initial release

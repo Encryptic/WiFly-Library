@@ -2,7 +2,7 @@
 #ifndef __SPIUART_H__
 #define __SPIUART_H__
 
-#include "Spi.h"
+#include "_Spi.h"
 
 // Until we implement a bulk transfer method that takes into account
 // the available space in the transmit buffer we will disable bulk transfers.
@@ -48,11 +48,13 @@
 // See Chapter 11 of datasheet
 #define SPI_READ_MODE_FLAG 0x80
 
+#define BAUD_RATE_DEFAULT 9600 // WiFly default baudrate
+
 
 class SpiUartDevice : public SpiDevice, public Print {
   
   public:
-    void begin();
+    void begin(unsigned long baudrate = BAUD_RATE_DEFAULT);
     byte available();
     int read();
     void write(byte value);
@@ -67,8 +69,9 @@ class SpiUartDevice : public SpiDevice, public Print {
   private:
     void writeRegister(byte registerAddress, byte data);
     byte readRegister(byte registerAddress);
-    void initUart();
-    void configureUart();  
+    void initUart(unsigned long baudrate);
+    void configureUart(unsigned long baudrate);  
+    void setBaudRate(unsigned long baudrate);
     boolean uartConnected();
 };
 

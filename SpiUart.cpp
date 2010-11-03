@@ -8,18 +8,36 @@
 #define EFR_ENABLE_ENHANCED_FUNCTIONS 1 << 4
 
 
+// See section 8.4 of the datasheet for definitions
+// of bits in the Line Control Register (LCR)
+#define LCR_ENABLE_DIVISOR_LATCH 1 << 7
+
+
+// The original crystal frequency used on the board (~12MHz) didn't
+// give a good range of baud rates so around July 2010 the crystal
+// was replaced with a better frequency (~14MHz).
+#define USE_14_MHZ_CRYSTAL true // true (14MHz) , false (12 MHz)
+
+#if USE_14_MHZ_CRYSTAL
+#define XTAL_FREQUENCY 14745600UL // On-board crystal (New mid-2010 Version)
+#else
+#define XTAL_FREQUENCY 12288000UL // On-board crystal (Original Version)
+#endif
+
+// See datasheet section 7.8 for configuring the
+// "Programmable baud rate generator"
+#define PRESCALER 1 // Default prescaler after reset
+#define BAUD_RATE_DIVISOR(baud) ((XTAL_FREQUENCY/PRESCALER)/(baud*16UL))
+
+
 // TODO: Handle configuration better
 // SC16IS750 register values
 struct SPI_UART_cfg {
-  char DivL;
-  char DivM;
   char DataFormat;
   char Flow;
 };
 
 struct SPI_UART_cfg SPI_Uart_config = {
-  0x50,
-  0x00,
   0x03,
   // We need to enable flow control or we overflow buffers and
   // lose data when used with the WiFly. Note that flow control 
@@ -30,16 +48,16 @@ struct SPI_UART_cfg SPI_Uart_config = {
 };
 
 
-void SpiUartDevice::begin() {
+void SpiUartDevice::begin(unsigned long baudrate /* default value */) {
   /*
         
    */
   SpiDevice::begin();
-  initUart();
+  initUart(baudrate);
 }
 
 
-void SpiUartDevice::initUart() {
+void SpiUartDevice::initUart(unsigned long baudrate) {
   /*
     
     Initialise the UART.
@@ -48,7 +66,7 @@ void SpiUartDevice::initUart() {
         
    */
   // Initialize and test SC16IS750
-  configureUart();
+  configureUart(baudrate);
   
   if(!uartConnected()){ 
     while(1) {
@@ -60,16 +78,25 @@ void SpiUartDevice::initUart() {
 }
 
 
-void SpiUartDevice::configureUart() {
+void SpiUartDevice::setBaudRate(unsigned long baudrate) {
+  /*
+   */
+  unsigned long divisor = BAUD_RATE_DIVISOR(baudrate);
+
+  writeRegister(LCR, LCR_ENABLE_DIVISOR_LATCH); // "Program baudrate"
+  writeRegister(DLL, lowByte(divisor));
+  writeRegister(DLM, highByte(divisor)); 
+}
+
+
+void SpiUartDevice::configureUart(unsigned long baudrate) {
   /*
   
      Configure the settings of the UART.
   
    */
   // TODO: Improve with use of constants and calculations.
-  writeRegister(LCR, 0x80); // 0x80 to program baudrate
-  writeRegister(DLL, SPI_Uart_config.DivL); //0x50 = 9600 with Xtal = 12.288MHz
-  writeRegister(DLM, SPI_Uart_config.DivM); 
+  setBaudRate(baudrate);
 
   writeRegister(LCR, 0xBF); // access EFR register
   writeRegister(EFR, SPI_Uart_config.Flow); // enable enhanced registers

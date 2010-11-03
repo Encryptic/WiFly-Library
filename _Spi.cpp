@@ -1,4 +1,4 @@
-#include "Spi.h"
+#include "_Spi.h"
 
 SpiDevice::SpiDevice() {
   /*
