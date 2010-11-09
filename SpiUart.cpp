@@ -16,7 +16,12 @@
 // The original crystal frequency used on the board (~12MHz) didn't
 // give a good range of baud rates so around July 2010 the crystal
 // was replaced with a better frequency (~14MHz).
-#define USE_14_MHZ_CRYSTAL true // true (14MHz) , false (12 MHz)
+
+//
+// CDT: Can we change this so it can be done at runtime?  I don't like having to alter the library
+// just to change this. Perhaps we can move this to a runtime function.
+//
+#define USE_14_MHZ_CRYSTAL false // true (14MHz) , false (12 MHz)
 
 #if USE_14_MHZ_CRYSTAL
 #define XTAL_FREQUENCY 14745600UL // On-board crystal (New mid-2010 Version)
