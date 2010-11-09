@@ -68,6 +68,9 @@ WiFlyDevice::WiFlyDevice(SpiUartDevice& theUart) : uart (theUart) {
 // TODO: Create a constructor that allows a SpiUartDevice (or better a "Stream") to be supplied
 //       and/or allow the select pin to be supplied.
 
+void WiFlyDevice::begin() {
+	begin(false);
+}
 
 void WiFlyDevice::begin(boolean adhocMode) {
   /*

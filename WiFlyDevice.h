@@ -6,6 +6,7 @@
 class WiFlyDevice {
   public:
     WiFlyDevice(SpiUartDevice& theUart);
+	void begin();
     void begin(boolean adhocMode);
 	boolean createAdHocNetwork(const char *ssid);
     //TODO: Add additional join methods    
