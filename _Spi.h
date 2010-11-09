@@ -6,19 +6,7 @@
 #define ___SPI_H__
 
 #include <WProgram.h>
-
-// SPI Pin definitions
-#if defined(__AVR_ATmega1280__)
-#define CS         53 
-#define MOSI      51
-#define MISO      50 
-#define SCK        52
-#else
-#define CS         10
-#define MOSI       11
-#define MISO       12
-#define SCK        13
-#endif
+#include "pins_arduino.h"
 
 
 // TODO: Do we want to use this instead: <http://www.arduino.cc/playground/Code/Spi>

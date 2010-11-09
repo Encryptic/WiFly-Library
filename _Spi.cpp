@@ -14,7 +14,7 @@ void SpiDevice::begin() {
     the CS define in the header.
     
    */
-  begin(CS);
+  begin(SS);
 }
 
 
